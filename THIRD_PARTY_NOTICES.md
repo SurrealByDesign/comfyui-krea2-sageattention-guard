@@ -1,6 +1,17 @@
 # Third-Party Notices
 
-This repository is a small compatibility patch and workflow package. It does not vendor ComfyUI, ComfyUI-KJNodes, SageAttention, Triton, model weights, text encoders, VAEs, or generated images.
+This repository is a small compatibility patch and workflow package.
+
+It does not vendor:
+
+- ComfyUI
+- ComfyUI-KJNodes
+- SageAttention
+- Triton
+- model weights
+- text encoders
+- VAEs
+- generated images
 
 ## ComfyUI
 
@@ -22,7 +33,7 @@ This repository is a small compatibility patch and workflow package. It does not
 - URL: https://github.com/thu-ml/SageAttention
 - Role: Optional external attention backend used by KJNodes.
 - Tested package: `sageattention==1.0.6`
-- License note: The locally tested `sageattention==1.0.6` wheel metadata declares BSD 3-Clause. SageAttention is not vendored in this repository.
+- License note: The locally tested `sageattention==1.0.6` wheel metadata declares BSD 3-Clause. SageAttention is not distributed with this repository; users install it separately and are responsible for complying with its license.
 
 If you use SageAttention in published work, consider citing the papers listed by the SageAttention project:
 

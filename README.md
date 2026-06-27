@@ -2,6 +2,8 @@
 
 This repo contains a small compatibility patch and a known-good workflow for using the `Patch Sage Attention KJ` node with local Krea 2 / Krea 2 Turbo workflows in [ComfyUI](https://github.com/comfyanonymous/ComfyUI).
 
+This is not an installable ComfyUI custom node. Do not clone this repository into `custom_nodes`. Apply the patch files to an existing [ComfyUI-KJNodes](https://github.com/kijai/ComfyUI-KJNodes) checkout instead.
+
 The patch is for [ComfyUI-KJNodes](https://github.com/kijai/ComfyUI-KJNodes). It keeps KJNodes' existing [SageAttention](https://github.com/thu-ml/SageAttention) behavior for non-Krea models, while adding a guarded Krea 2 path that only accelerates allowlisted diffusion attention calls and falls back to ComfyUI's original attention for unsupported calls.
 
 ## What It Fixes
@@ -25,6 +27,7 @@ patches/
   0002-krea2-output-shape-validation.patch
 workflows/
   Krea2 Turbo SageAttention - Working Baseline.json
+PATCH_NOTES.md
 THIRD_PARTY_NOTICES.md
 requirements.txt
 ```
@@ -57,7 +60,7 @@ VAE: qwen_image_vae.safetensors
 
 ## Installation
 
-From your `ComfyUI/custom_nodes/comfyui-kjnodes` folder, apply the patches in order:
+From your KJNodes folder, apply the patches in order. Depending on your operating system and install method, the folder may be named `ComfyUI-KJNodes` or `comfyui-kjnodes`.
 
 ```powershell
 git apply "path/to/patches/0001-krea2-guarded-sageattention.patch"
@@ -84,7 +87,7 @@ Restart ComfyUI after patching or installing packages.
 
 ## Reverting
 
-From your `ComfyUI/custom_nodes/comfyui-kjnodes` folder, reverse the patches in the opposite order:
+From the same KJNodes folder, reverse the patches in the opposite order:
 
 ```powershell
 git apply -R "path/to/patches/0002-krea2-output-shape-validation.patch"
@@ -150,10 +153,12 @@ If `git apply` fails, your KJNodes copy probably differs from the tested commit.
 
 ## License And Attribution
 
-This patch modifies behavior in ComfyUI-KJNodes, which is distributed under GPL-3.0. This repository includes the GPL v3 license text for compatibility with that upstream project.
+This patch modifies behavior in ComfyUI-KJNodes, which is distributed under GPL-3.0. This repository includes the GPL v3 license text and uses GPL-3.0-or-later wording for compatibility with the standard GPL v3 boilerplate.
 
-SageAttention is not vendored here. It is used as an external dependency. The tested package was `sageattention==1.0.6`, whose installed package metadata declares BSD 3-Clause.
+SageAttention is not distributed with this repository. Users install it separately and are responsible for complying with its license. The tested package was `sageattention==1.0.6`, whose installed package metadata declares BSD 3-Clause.
 
-See `THIRD_PARTY_NOTICES.md` for project credits and dependency notes.
+See `PATCH_NOTES.md` for the modification notice and `THIRD_PARTY_NOTICES.md` for project credits and dependency notes.
 
 Krea 2 model weights, Qwen text encoders, VAE files, generated images, package caches, and Triton caches are not included. This repository is not affiliated with ComfyUI, KJNodes, SageAttention, Krea, Qwen, or their maintainers.
+
+This repository is not legal advice.
