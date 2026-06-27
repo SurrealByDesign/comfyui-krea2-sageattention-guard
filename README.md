@@ -54,7 +54,7 @@ Known-good model files:
 
 ```text
 Turbo diffusion model: krea2_turbo_fp8_scaled.safetensors
-RAW diffusion model: raw.safetensors
+RAW diffusion model: raw.safetensors local test name; public filename may vary, for example krea2_raw_bf16.safetensors
 text encoder: qwen3vl_4b_fp8_scaled.safetensors
 CLIPLoader type: krea2
 VAE: qwen_image_vae.safetensors
