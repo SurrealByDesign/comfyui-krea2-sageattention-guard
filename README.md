@@ -26,6 +26,7 @@ patches/
   0001-krea2-guarded-sageattention.patch
   0002-krea2-output-shape-validation.patch
 workflows/
+  Krea2 RAW SageAttention - Test Baseline.json
   Krea2 Turbo SageAttention - Working Baseline.json
 PATCH_NOTES.md
 THIRD_PARTY_NOTICES.md
@@ -49,10 +50,11 @@ SageAttention: sageattention==1.0.6
 
 KJNodes moves quickly and does not always have tagged releases. If your local KJNodes copy is much newer than the tested commit, `git apply` may fail or require manual conflict resolution.
 
-Known-good workflow files:
+Known-good model files:
 
 ```text
-diffusion model: krea2_turbo_fp8_scaled.safetensors
+Turbo diffusion model: krea2_turbo_fp8_scaled.safetensors
+RAW diffusion model: raw.safetensors
 text encoder: qwen3vl_4b_fp8_scaled.safetensors
 CLIPLoader type: krea2
 VAE: qwen_image_vae.safetensors
@@ -102,30 +104,48 @@ git restore nodes/model_optimization_nodes.py
 
 ## Workflow
 
-Load:
+Load one of:
 
 ```text
+workflows/Krea2 RAW SageAttention - Test Baseline.json
 workflows/Krea2 Turbo SageAttention - Working Baseline.json
 ```
 
-This included sample workflow is the known-good Krea 2 Turbo + SageAttention baseline tested for this patch. It intentionally has blank prompt fields and no generated image embedded.
+The included sample workflows are blank-prompt baselines with no generated images embedded.
 
-Krea 2 RAW has not been separately tested for this repo. The guard is model-detection based, so it is expected to activate for RAW checkpoints that use ComfyUI's `Krea2` model class, but the included workflow was tested with Krea 2 Turbo FP8 only. RAW users should verify with a small 512x512 run before relying on it.
+Krea 2 Turbo was tested as the initial known-good path. Krea 2 RAW was also smoke-tested with `raw.safetensors` and the `qwen3vl_4b_fp8_scaled.safetensors` text encoder. RAW output quality is more sensitive to sampler settings than Turbo, so the RAW workflow uses a slower quality baseline instead of Turbo's fast 8-step settings.
 
-Important settings:
+Shared SageAttention settings:
 
 ```text
 Patch Sage Attention KJ:
   sage_attention: auto
   allow_compile: false
   dry_run: true
+```
 
+Turbo KSampler baseline:
+
+```text
 KSampler:
   steps: 8
   cfg: 1.0
   sampler: euler
   scheduler: simple
 ```
+
+RAW KSampler baseline:
+
+```text
+KSampler:
+  size: 1024x1024
+  steps: 40
+  cfg: 4.0
+  sampler: dpmpp_2m
+  scheduler: beta
+```
+
+If the RAW workflow runs out of VRAM, lower only the latent size to `768x768` first and keep the sampler settings unchanged.
 
 ## Troubleshooting
 
