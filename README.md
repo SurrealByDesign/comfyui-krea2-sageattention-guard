@@ -110,7 +110,7 @@ workflows/Krea2 Turbo SageAttention - Working Baseline.json
 
 This included sample workflow is the known-good Krea 2 Turbo + SageAttention baseline tested for this patch. It intentionally has blank prompt fields and no generated image embedded.
 
-The guard is model-detection based and should also apply to local Krea 2 RAW models that use ComfyUI's `Krea2` model class. The included workflow was tested with Krea 2 Turbo FP8 only, so RAW users should treat it as compatible in principle but not separately validated.
+Krea 2 RAW has not been separately tested for this repo. The guard is model-detection based, so it is expected to activate for RAW checkpoints that use ComfyUI's `Krea2` model class, but the included workflow was tested with Krea 2 Turbo FP8 only. RAW users should verify with a small 512x512 run before relying on it.
 
 Important settings:
 
