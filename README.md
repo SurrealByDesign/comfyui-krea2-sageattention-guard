@@ -60,6 +60,8 @@ CLIPLoader type: krea2
 VAE: qwen_image_vae.safetensors
 ```
 
+The RAW workflow was smoke-tested with a locally named `raw.safetensors` file. Public Krea 2 RAW downloads may use a more specific filename such as `krea2_raw_bf16.safetensors`; if your file has a different name, select it in the `Load Diffusion Model` node after loading the workflow.
+
 ## Installation
 
 From your KJNodes folder, apply the patches in order. Depending on your operating system and install method, the folder may be named `ComfyUI-KJNodes` or `comfyui-kjnodes`.
@@ -177,7 +179,7 @@ This patch modifies behavior in ComfyUI-KJNodes, which is distributed under GPL-
 
 SageAttention is not distributed with this repository. Users install it separately and are responsible for complying with its license. The tested package was `sageattention==1.0.6`, whose installed package metadata declares BSD 3-Clause.
 
-See `PATCH_NOTES.md` for the modification notice and `THIRD_PARTY_NOTICES.md` for project credits and dependency notes.
+See `PATCH_NOTES.md` for the project copyright and modification notice, and `THIRD_PARTY_NOTICES.md` for project credits and dependency notes. The placeholder example near the end of the GPL license text is part of the standard GPL appendix, not a missing repository field.
 
 Krea 2 model weights, Qwen text encoders, VAE files, generated images, package caches, and Triton caches are not included. This repository is not affiliated with ComfyUI, KJNodes, SageAttention, Krea, Qwen, or their maintainers.
 

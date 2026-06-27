@@ -57,8 +57,11 @@ The workflow references filenames that were useful for local testing:
 
 ```text
 krea2_turbo_fp8_scaled.safetensors
+raw.safetensors
 qwen3vl_4b_fp8_scaled.safetensors
 qwen_image_vae.safetensors
 ```
+
+The RAW checkpoint was locally named `raw.safetensors` during smoke testing. Public downloads may use a more specific filename such as `krea2_raw_bf16.safetensors`.
 
 These filenames are references only. They are not included in this repository.

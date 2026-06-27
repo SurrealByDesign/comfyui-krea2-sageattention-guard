@@ -6,6 +6,12 @@ This repository contains patch files that modify this ComfyUI-KJNodes source fil
 nodes/model_optimization_nodes.py
 ```
 
+Project copyright notice:
+
+```text
+Copyright (C) 2026 SurrealByDesign
+```
+
 Original project:
 
 ```text
