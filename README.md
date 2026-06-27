@@ -37,6 +37,15 @@ requirements.txt
 - A working SageAttention install.
 - Krea 2 model files.
 
+Tested against:
+
+```text
+ComfyUI-KJNodes: kijai/ComfyUI-KJNodes @ 50a0837f9aea602b184bbf6dbabf66ed2c7a1d22
+SageAttention: sageattention==1.0.6
+```
+
+KJNodes moves quickly and does not always have tagged releases. If your local KJNodes copy is much newer than the tested commit, `git apply` may fail or require manual conflict resolution.
+
 Known-good workflow files:
 
 ```text
@@ -51,15 +60,19 @@ VAE: qwen_image_vae.safetensors
 From your `ComfyUI/custom_nodes/comfyui-kjnodes` folder, apply the patches in order:
 
 ```powershell
-git apply "path\to\patches\0001-krea2-guarded-sageattention.patch"
-git apply "path\to\patches\0002-krea2-output-shape-validation.patch"
+git apply "path/to/patches/0001-krea2-guarded-sageattention.patch"
+git apply "path/to/patches/0002-krea2-output-shape-validation.patch"
 ```
+
+If `Patch Sage Attention KJ` already has a `dry_run` option, this patch may already be installed in that KJNodes copy.
 
 Install SageAttention separately rather than vendoring it into this repo:
 
 ```powershell
 python -m pip install sageattention==1.0.6
 ```
+
+The `sageattention==1.0.6` pin is the version this patch and workflow were tested with. Newer SageAttention versions may work, but they were not validated here and may expose different kernels, dependencies, or tensor-shape behavior.
 
 On Windows, Triton support may require a Windows-compatible Triton package:
 
@@ -68,6 +81,21 @@ python -m pip install triton-windows
 ```
 
 Restart ComfyUI after patching or installing packages.
+
+## Reverting
+
+From your `ComfyUI/custom_nodes/comfyui-kjnodes` folder, reverse the patches in the opposite order:
+
+```powershell
+git apply -R "path/to/patches/0002-krea2-output-shape-validation.patch"
+git apply -R "path/to/patches/0001-krea2-guarded-sageattention.patch"
+```
+
+If your KJNodes folder is a git checkout and you only want to discard local patch changes, you can also restore the touched file from upstream:
+
+```powershell
+git restore nodes/model_optimization_nodes.py
+```
 
 ## Workflow
 
@@ -78,6 +106,8 @@ workflows/Krea2 Turbo SageAttention - Working Baseline.json
 ```
 
 This included sample workflow is the known-good Krea 2 Turbo + SageAttention baseline tested for this patch. It intentionally has blank prompt fields and no generated image embedded.
+
+The guard is model-detection based and should also apply to local Krea 2 RAW models that use ComfyUI's `Krea2` model class. The included workflow was tested with Krea 2 Turbo FP8 only, so RAW users should treat it as compatible in principle but not separately validated.
 
 Important settings:
 
@@ -116,9 +146,11 @@ If the patched node is active and the compiler error remains, install a Windows-
 
 If output is black or unstable, set `sage_attention` to `disabled` to confirm the base Krea workflow is healthy, then re-enable `auto` with `dry_run` on.
 
+If `git apply` fails, your KJNodes copy probably differs from the tested commit. Check whether the patch is already present by looking for `dry_run` on the `Patch Sage Attention KJ` node. If it is not present, update or reset KJNodes to a known state and try again, or apply the changes manually from the patch files.
+
 ## License And Attribution
 
-This patch modifies behavior in ComfyUI-KJNodes, which is distributed under GPL-3.0. This repository is distributed under GPL-3.0-only for compatibility with that upstream project.
+This patch modifies behavior in ComfyUI-KJNodes, which is distributed under GPL-3.0. This repository includes the GPL v3 license text for compatibility with that upstream project.
 
 SageAttention is not vendored here. It is used as an external dependency. The tested package was `sageattention==1.0.6`, whose installed package metadata declares BSD 3-Clause.
 

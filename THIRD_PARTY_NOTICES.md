@@ -13,7 +13,8 @@ This repository is a small compatibility patch and workflow package. It does not
 - Project: ComfyUI-KJNodes
 - URL: https://github.com/kijai/ComfyUI-KJNodes
 - Role: Upstream custom node package that provides `Patch Sage Attention KJ`.
-- License note: The patch files in this repository are derived from KJNodes source context and are distributed under GPL-3.0-only for compatibility with upstream KJNodes.
+- Tested commit: `50a0837f9aea602b184bbf6dbabf66ed2c7a1d22`
+- License note: The patch files in this repository are derived from KJNodes source context and include the GPL v3 license text for compatibility with upstream KJNodes.
 
 ## SageAttention
 
