@@ -1,0 +1,38 @@
+# Local Python/runtime artifacts
+__pycache__/
+*.py[cod]
+*.pyd
+.pytest_cache/
+
+# Local package/cache installs
+python_pkgs/
+triton_cache/
+
+# Local build/scratch folders
+patchbuild/
+.agents/
+
+# Logs
+*.log
+
+# Local launcher/validation scripts with machine-specific paths
+Start ComfyUI Krea2 SageAttention.*
+validate_krea2_sageattention.*
+apply_krea2_sageattention_shape_fix.*
+
+# Scratch copies of upstream files
+model_optimization_nodes.py
+model_optimization_nodes_after_apply.py
+
+# Model and generated media files
+*.safetensors
+*.ckpt
+*.pt
+*.pth
+*.gguf
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.mp4
+*.webm

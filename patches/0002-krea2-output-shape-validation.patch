@@ -1,0 +1,35 @@
+diff --git a/nodes/model_optimization_nodes.py b/nodes/model_optimization_nodes.py
+index d8e7252..7d72cd3 100644
+--- a/nodes/model_optimization_nodes.py
++++ b/nodes/model_optimization_nodes.py
+@@ -172,10 +172,11 @@ def _run_krea2_sage_dry_run(new_attention, sage_attention, allowed_heads):
+         return False
+ 
+     finite = torch.isfinite(out).all().item()
+-    if out.shape != q.shape or out.dtype != dtype or not finite:
++    expected_shape = (q.shape[0], q.shape[2], q.shape[1] * q.shape[3])
++    if out.shape != expected_shape or out.dtype != dtype or not finite:
+         logging.warning(
+             f"[KJNodes] Krea2 SageAttention dry-run failed validation: "
+-            f"shape={tuple(out.shape)}, dtype={out.dtype}, finite={finite}"
++            f"shape={tuple(out.shape)}, expected_shape={expected_shape}, dtype={out.dtype}, finite={finite}"
+         )
+         return False
+ 
+@@ -247,10 +248,14 @@ def _make_krea2_sage_attention_override(new_attention, sage_attention, model, dr
+         shape_key = (tuple(q.shape), q.dtype, sage_attention)
+         if shape_key not in _krea2_sage_validated_shapes:
+             finite = torch.isfinite(out).all().item()
+-            if out.shape != q.shape or not finite:
++            if kwargs.get("skip_output_reshape", False):
++                expected_shape = q.shape
++            else:
++                expected_shape = (q.shape[0], q.shape[2], q.shape[1] * q.shape[3])
++            if out.shape != expected_shape or not finite:
+                 return fallback(
+                     f"invalid:{shape_key}",
+-                    f"[KJNodes] Krea2: SageAttention produced invalid output shape={tuple(out.shape)}, finite={finite}; falling back.",
++                    f"[KJNodes] Krea2: SageAttention produced invalid output shape={tuple(out.shape)}, expected_shape={expected_shape}, finite={finite}; falling back.",
+                     logging.WARNING,
+                 )
+             _krea2_sage_validated_shapes.add(shape_key)
