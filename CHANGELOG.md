@@ -7,3 +7,4 @@
 - Added output-shape validation for ComfyUI's `skip_reshape=True` attention path.
 - Added blank-prompt Turbo and RAW sample workflows.
 - Added SageAttention 2.2 verified workflow copies and local benchmark notes.
+- Added patch-application verification docs and helper script.

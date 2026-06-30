@@ -41,6 +41,8 @@ This patch adds:
 patches/
   0001-krea2-guarded-sageattention.patch
   0002-krea2-output-shape-validation.patch
+scripts/
+  check_patch_applies.py
 workflows/
   Krea2 RAW SageAttention - Test Baseline.json
   Krea2 RAW SageAttention 2.2 - Verified Baseline.json
@@ -107,12 +109,27 @@ If `Patch Sage Attention KJ` already has a `dry_run` option, this patch may alre
 
 Before applying, you can check patch compatibility from inside your KJNodes folder:
 
+Check only:
+
 ```powershell
 git apply --check "path/to/patches/0001-krea2-guarded-sageattention.patch"
-git apply "path/to/patches/0001-krea2-guarded-sageattention.patch"
 git apply --check "path/to/patches/0002-krea2-output-shape-validation.patch"
+```
+
+Apply for real:
+
+```powershell
+git apply "path/to/patches/0001-krea2-guarded-sageattention.patch"
 git apply "path/to/patches/0002-krea2-output-shape-validation.patch"
 ```
+
+You can also run the included validation helper from this repository before patching:
+
+```powershell
+python scripts/check_patch_applies.py "path/to/ComfyUI-KJNodes"
+```
+
+Use any Python available on your system, including the Python environment used by ComfyUI. The helper copies the target KJNodes checkout to a temporary folder and applies both patches there, so it does not modify your installed KJNodes files.
 
 After restarting ComfyUI, the `Patch Sage Attention KJ` node should expose:
 
