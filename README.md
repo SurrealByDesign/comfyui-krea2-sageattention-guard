@@ -27,7 +27,9 @@ patches/
   0002-krea2-output-shape-validation.patch
 workflows/
   Krea2 RAW SageAttention - Test Baseline.json
+  Krea2 RAW SageAttention 2.2 - Verified Baseline.json
   Krea2 Turbo SageAttention - Working Baseline.json
+  Krea2 Turbo SageAttention 2.2 - Verified Baseline.json
 PATCH_NOTES.md
 THIRD_PARTY_NOTICES.md
 requirements.txt
@@ -46,6 +48,7 @@ Tested against:
 ```text
 ComfyUI-KJNodes: kijai/ComfyUI-KJNodes @ 50a0837f9aea602b184bbf6dbabf66ed2c7a1d22
 SageAttention: sageattention==1.0.6
+SageAttention: sageattention==2.2.0 from upstream source tag v2.2.0
 ```
 
 KJNodes moves quickly and does not always have tagged releases. If your local KJNodes copy is much newer than the tested commit, `git apply` may fail or require manual conflict resolution.
@@ -79,7 +82,9 @@ Install SageAttention separately rather than vendoring it into this repo:
 python -m pip install sageattention==1.0.6
 ```
 
-The `sageattention==1.0.6` pin is the version this patch and workflow were tested with. Newer SageAttention versions may work, but they were not validated here and may expose different kernels, dependencies, or tensor-shape behavior.
+The `sageattention==1.0.6` wheel is the easiest known working install path. SageAttention `2.2.0` was also validated with this patch on Windows, but it may need to be built from the upstream source tag because PyPI may not provide a `2.2.0` wheel for your setup.
+
+For a source build, follow the SageAttention project instructions and install tag `v2.2.0` into the same Python environment used by ComfyUI. On Windows, this typically requires CUDA Toolkit, Visual Studio 2022 Build Tools with x64 C++ tools, and an x64 developer command prompt.
 
 On Windows, Triton support may require a Windows-compatible Triton package:
 
@@ -110,7 +115,9 @@ Load one of:
 
 ```text
 workflows/Krea2 RAW SageAttention - Test Baseline.json
+workflows/Krea2 RAW SageAttention 2.2 - Verified Baseline.json
 workflows/Krea2 Turbo SageAttention - Working Baseline.json
+workflows/Krea2 Turbo SageAttention 2.2 - Verified Baseline.json
 ```
 
 The included sample workflows are blank-prompt baselines with no generated images embedded.
@@ -125,6 +132,32 @@ Patch Sage Attention KJ:
   allow_compile: false
   dry_run: true
 ```
+
+The `2.2 - Verified Baseline` workflows use the same KJNodes patch node. The workflow cannot pin the installed SageAttention Python package; it will use whichever SageAttention version is active in your ComfyUI Python environment.
+
+## SageAttention 2.2 Verification
+
+SageAttention `2.2.0` was built locally from upstream tag `v2.2.0` and tested through the ComfyUI Desktop API with this guarded Krea patch. The test machine used ComfyUI `0.26.2`, PyTorch `2.8.0+cu129`, CUDA `12.9`, and an NVIDIA RTX 5080.
+
+Both Krea 2 Turbo and Krea 2 RAW completed successfully with SageAttention `2.2.0` enabled.
+
+Observed local benchmark timings:
+
+```text
+512x512
+Turbo no Sage:   15.844s
+Turbo Sage 2.2:   5.573s
+RAW no Sage:     66.693s
+RAW Sage 2.2:    45.964s
+
+1024x1024
+Turbo no Sage:   16.796s
+Turbo Sage 2.2:  10.718s
+RAW no Sage:    111.669s
+RAW Sage 2.2:   104.812s
+```
+
+On this setup, Turbo showed a clear speedup with SageAttention `2.2.0`. RAW also worked, but the 1024x1024 RAW speedup was small.
 
 Turbo KSampler baseline:
 
@@ -177,7 +210,7 @@ If `git apply` fails, your KJNodes copy probably differs from the tested commit.
 
 This patch modifies behavior in ComfyUI-KJNodes, which is distributed under GPL-3.0. This repository includes the GPL v3 license text and uses GPL-3.0-or-later wording for compatibility with the standard GPL v3 boilerplate.
 
-SageAttention is not distributed with this repository. Users install it separately and are responsible for complying with its license. The tested package was `sageattention==1.0.6`, whose installed package metadata declares BSD 3-Clause.
+SageAttention is not distributed with this repository. Users install it separately and are responsible for complying with its license. The tested package versions were `sageattention==1.0.6` and `sageattention==2.2.0`; installed package metadata for the tested 1.0.6 wheel declared BSD 3-Clause.
 
 See `PATCH_NOTES.md` for the project copyright and modification notice, and `THIRD_PARTY_NOTICES.md` for project credits and dependency notes. The placeholder example near the end of the GPL license text is part of the standard GPL appendix, not a missing repository field.
 

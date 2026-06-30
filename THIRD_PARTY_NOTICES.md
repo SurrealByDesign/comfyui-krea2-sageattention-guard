@@ -33,6 +33,7 @@ It does not vendor:
 - URL: https://github.com/thu-ml/SageAttention
 - Role: Optional external attention backend used by KJNodes.
 - Tested package: `sageattention==1.0.6`
+- Tested source build: `sageattention==2.2.0` from upstream tag `v2.2.0`
 - License note: The locally tested `sageattention==1.0.6` wheel metadata declares BSD 3-Clause. SageAttention is not distributed with this repository; users install it separately and are responsible for complying with its license.
 
 If you use SageAttention in published work, consider citing the papers listed by the SageAttention project:
