@@ -6,6 +6,22 @@ This is not an installable ComfyUI custom node. Do not clone this repository int
 
 The patch is for [ComfyUI-KJNodes](https://github.com/kijai/ComfyUI-KJNodes). It keeps KJNodes' existing [SageAttention](https://github.com/thu-ml/SageAttention) behavior for non-Krea models, while adding a guarded Krea 2 path that only accelerates allowlisted diffusion attention calls and falls back to ComfyUI's original attention for unsupported calls.
 
+## Should I Use This?
+
+Use this if:
+
+- You are running local Krea 2 or Krea 2 Turbo workflows in ComfyUI.
+- You already use, or want to test, KJNodes' `Patch Sage Attention KJ` node.
+- You are comfortable applying and reverting a small patch inside an existing `ComfyUI-KJNodes` checkout.
+- You want guarded fallback behavior instead of globally patching every Krea 2 attention call.
+
+Skip this if:
+
+- You only want a normal ComfyUI custom node to clone into `custom_nodes`.
+- Your Krea 2 workflow already works and you do not need SageAttention acceleration.
+- You are not comfortable editing or patching an installed custom node package.
+- You are using a managed ComfyUI install where KJNodes files are automatically overwritten.
+
 ## What It Fixes
 
 Krea 2 has attention paths that should not be patched blindly. In particular, its text-fusion path can use different head counts/shapes than the main diffusion attention. A global SageAttention override can hit those unsupported paths and fail with Triton/compiler errors, invalid tensor shapes, NaNs, or black images.
@@ -51,6 +67,16 @@ ComfyUI-KJNodes: kijai/ComfyUI-KJNodes @ 50a0837f9aea602b184bbf6dbabf66ed2c7a1d2
 SageAttention: sageattention==1.0.6
 SageAttention: sageattention==2.2.0 from upstream source tag v2.2.0
 ```
+
+## Test Matrix
+
+| Platform | GPU | ComfyUI | PyTorch/CUDA | KJNodes | SageAttention | Krea Target | Result |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Windows / ComfyUI Desktop | RTX 5080 | 0.26.2 | 2.8.0+cu129 / CUDA 12.9 | `50a0837f9aea602b184bbf6dbabf66ed2c7a1d22` patch context | 1.0.6 | Krea 2 Turbo FP8 | Passed |
+| Windows / ComfyUI Desktop | RTX 5080 | 0.26.2 | 2.8.0+cu129 / CUDA 12.9 | `50a0837f9aea602b184bbf6dbabf66ed2c7a1d22` patch context | 1.0.6 | Krea 2 RAW | Smoke-tested |
+| Windows / ComfyUI Desktop | RTX 5080 | 0.26.2 | 2.8.0+cu129 / CUDA 12.9 | `50a0837f9aea602b184bbf6dbabf66ed2c7a1d22` patch context | 2.2.0 source tag `v2.2.0` | Krea 2 Turbo BF16 | Passed |
+| Windows / ComfyUI Desktop | RTX 5080 | 0.26.2 | 2.8.0+cu129 / CUDA 12.9 | `50a0837f9aea602b184bbf6dbabf66ed2c7a1d22` patch context | 2.2.0 source tag `v2.2.0` | Krea 2 RAW BF16 | Passed |
+| Linux | Not tested | Not tested | Not tested | Not tested | Not tested | Krea 2 / Turbo | Unknown |
 
 KJNodes moves quickly and does not always have tagged releases. If your local KJNodes copy is much newer than the tested commit, `git apply` may fail or require manual conflict resolution.
 
@@ -104,7 +130,9 @@ Install SageAttention separately rather than vendoring it into this repo:
 python -m pip install sageattention==1.0.6
 ```
 
-The `sageattention==1.0.6` wheel is the easiest known working install path. SageAttention `2.2.0` was also validated with this patch on Windows, but it may need to be built from the upstream source tag because PyPI may not provide a `2.2.0` wheel for your setup.
+The included `requirements.txt` is a convenience baseline for the easiest tested install path. It intentionally pins `sageattention==1.0.6`.
+
+SageAttention `2.2.0` was also validated with this patch on Windows, but it may need to be built from the upstream source tag because PyPI may not provide a `2.2.0` wheel for your setup.
 
 For a source build, follow the SageAttention project instructions and install tag `v2.2.0` into the same Python environment used by ComfyUI. On Windows, this typically requires CUDA Toolkit, Visual Studio 2022 Build Tools with x64 C++ tools, and an x64 developer command prompt.
 
@@ -203,6 +231,25 @@ KSampler:
 ```
 
 If the RAW workflow runs out of VRAM, lower only the latent size to `768x768` first and keep the sampler settings unchanged.
+
+## Expected Logs
+
+When the guarded Krea path is active, ComfyUI should show KJNodes/SageAttention messages indicating that compatible diffusion attention was patched and unsupported paths were skipped or sent through fallback. Exact wording can vary by KJNodes version, but healthy output should look like this in spirit:
+
+```text
+[KJNodes] Krea2 model detected; using guarded SageAttention attention override.
+[KJNodes] Krea2 SageAttention dry-run passed.
+[KJNodes] Krea2 SageAttention patched compatible diffusion attention.
+```
+
+Fallback messages are not always failures. They are expected when the patch sees unsupported masks, dtypes, devices, head counts, or likely text-fusion attention:
+
+```text
+[KJNodes] Krea2 SageAttention fallback: unsupported mask/device/dtype/head count.
+[KJNodes] Krea2 SageAttention skipped likely text-fusion attention path.
+```
+
+If every call falls back, the workflow should still render, but you may not see a speedup.
 
 ## Troubleshooting
 
