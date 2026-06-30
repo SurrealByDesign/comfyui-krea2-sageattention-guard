@@ -31,6 +31,7 @@ workflows/
   Krea2 Turbo SageAttention - Working Baseline.json
   Krea2 Turbo SageAttention 2.2 - Verified Baseline.json
 PATCH_NOTES.md
+CHANGELOG.md
 THIRD_PARTY_NOTICES.md
 requirements.txt
 ```
@@ -75,6 +76,27 @@ git apply "path/to/patches/0002-krea2-output-shape-validation.patch"
 ```
 
 If `Patch Sage Attention KJ` already has a `dry_run` option, this patch may already be installed in that KJNodes copy.
+
+## Verification
+
+Before applying, you can check patch compatibility from inside your KJNodes folder:
+
+```powershell
+git apply --check "path/to/patches/0001-krea2-guarded-sageattention.patch"
+git apply "path/to/patches/0001-krea2-guarded-sageattention.patch"
+git apply --check "path/to/patches/0002-krea2-output-shape-validation.patch"
+git apply "path/to/patches/0002-krea2-output-shape-validation.patch"
+```
+
+After restarting ComfyUI, the `Patch Sage Attention KJ` node should expose:
+
+```text
+sage_attention
+allow_compile
+dry_run
+```
+
+If `dry_run` is not visible, the patched KJNodes file is probably not the one loaded by the ComfyUI instance you are running.
 
 Install SageAttention separately rather than vendoring it into this repo:
 
