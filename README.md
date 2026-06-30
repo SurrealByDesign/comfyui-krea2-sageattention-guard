@@ -1,5 +1,7 @@
 # Krea 2 SageAttention Guard for ComfyUI-KJNodes
 
+Patch package only. Not an installable ComfyUI custom node.
+
 This repo contains a small compatibility patch and a known-good workflow for using the `Patch Sage Attention KJ` node with local Krea 2 / Krea 2 Turbo workflows in [ComfyUI](https://github.com/comfyanonymous/ComfyUI).
 
 This is not an installable ComfyUI custom node. Do not clone this repository into `custom_nodes`. Apply the patch files to an existing [ComfyUI-KJNodes](https://github.com/kijai/ComfyUI-KJNodes) checkout instead.
@@ -78,7 +80,7 @@ SageAttention: sageattention==2.2.0 from upstream source tag v2.2.0
 | Windows / ComfyUI Desktop | RTX 5080 | 0.26.2 | 2.8.0+cu129 / CUDA 12.9 | `50a0837f9aea602b184bbf6dbabf66ed2c7a1d22` patch context | 1.0.6 | Krea 2 RAW | Smoke-tested |
 | Windows / ComfyUI Desktop | RTX 5080 | 0.26.2 | 2.8.0+cu129 / CUDA 12.9 | `50a0837f9aea602b184bbf6dbabf66ed2c7a1d22` patch context | 2.2.0 source tag `v2.2.0` | Krea 2 Turbo BF16 | Passed |
 | Windows / ComfyUI Desktop | RTX 5080 | 0.26.2 | 2.8.0+cu129 / CUDA 12.9 | `50a0837f9aea602b184bbf6dbabf66ed2c7a1d22` patch context | 2.2.0 source tag `v2.2.0` | Krea 2 RAW BF16 | Passed |
-| Linux | Not tested | Not tested | Not tested | Not tested | Not tested | Krea 2 / Turbo | Unknown |
+| Linux | Not tested | Not tested | Not tested | Not tested | Not tested | Krea 2 / Turbo | Unknown; reports welcome |
 
 KJNodes moves quickly and does not always have tagged releases. If your local KJNodes copy is much newer than the tested commit, `git apply` may fail or require manual conflict resolution.
 
